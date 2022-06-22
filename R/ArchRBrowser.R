@@ -1425,7 +1425,8 @@ plotBrowserTrack <- function(
 #######################################################
 .featureTracks <- function(
   features = NULL, 
-  region = NULL, 
+  region = NULL,
+  highlight = NULL,
   title = "FeatureTrack", 
   pal = NULL,
   baseSize = 9, 
@@ -1551,7 +1552,8 @@ plotBrowserTrack <- function(
 #######################################################
 .loopTracks <- function(
   loops = NULL, 
-  region = NULL, 
+  region = NULL,
+  highlight = NULL,
   title = "LoopTrack", 
   pal = NULL,
   baseSize = 9, 
@@ -1716,6 +1718,7 @@ plotBrowserTrack <- function(
   minCells = 5,
   maxCells = 100,
   groupBy = "Clusters",
+  highlight = NULL,
   useGroups = NULL,
   threads = 1,
   baseSize = 7,
