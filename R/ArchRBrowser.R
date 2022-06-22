@@ -1066,7 +1066,7 @@ plotBrowserTrack <- function(
     guides(fill = "none", colour = "none") + ggtitle(title)
 
     if(!is.null(highlight)) {
-      highlight <- subsetByOverlaps(x = highlight, ranges = region, type = "within")
+      highlight <- suppressWarnings(subsetByOverlaps(x = highlight, ranges = region, type = "within"))
       if(length(highlight) > 0) {
         highlight <- data.frame(highlight)
         rect <- data.frame(xmin=highlight$start, xmax=highlight$end, ymin=-Inf, ymax=Inf)
@@ -1382,7 +1382,7 @@ plotBrowserTrack <- function(
         legend.key.size = unit(0.75,"line"), legend.background = element_rect(color =NA), strip.background = element_blank())
 
     if(!is.null(highlight)) {
-      highlight <- subsetByOverlaps(x = highlight, ranges = region, type = "within")
+      highlight <- suppressWarnings(subsetByOverlaps(x = highlight, ranges = region, type = "within"))
       if(length(highlight) > 0) {
         highlight <- data.frame(highlight)
         rect <- data.frame(xmin=highlight$start, xmax=highlight$end, ymin=-Inf, ymax=Inf)
@@ -1423,7 +1423,7 @@ plotBrowserTrack <- function(
       theme(axis.title.y=element_blank(), axis.text.y=element_blank(),axis.ticks.y=element_blank())
 
     if(!is.null(highlight)) {
-      highlight <- subsetByOverlaps(x = highlight, ranges = region, type = "within")
+      highlight <- suppressWarnings(subsetByOverlaps(x = highlight, ranges = region, type = "within"))
       if(length(highlight) > 0) {
         highlight <- data.frame(highlight)
         rect <- data.frame(xmin=highlight$start, xmax=highlight$end, ymin=-Inf, ymax=Inf)
@@ -1527,7 +1527,7 @@ plotBrowserTrack <- function(
       guides(color = "none", fill = "none") + theme(strip.text.y = element_text(size = facetbaseSize, angle = 0), strip.background = element_blank())
 
     if(!is.null(highlight)) {
-      highlight <- subsetByOverlaps(x = highlight, ranges = region, type = "within")
+      highlight <- suppressWarnings(subsetByOverlaps(x = highlight, ranges = region, type = "within"))
       if(length(highlight) > 0) {
         highlight <- data.frame(highlight)
         rect <- data.frame(xmin=highlight$start, xmax=highlight$end, ymin=-Inf, ymax=Inf)
@@ -1548,7 +1548,7 @@ plotBrowserTrack <- function(
       theme(axis.title.y=element_blank(), axis.text.y=element_blank(),axis.ticks.y=element_blank())
 
     if(!is.null(highlight)) {
-      highlight <- subsetByOverlaps(x = highlight, ranges = region, type = "within")
+      highlight <- suppressWarnings(subsetByOverlaps(x = highlight, ranges = region, type = "within"))
       if(length(highlight) > 0) {
         highlight <- data.frame(highlight)
         rect <- data.frame(xmin=highlight$start, xmax=highlight$end, ymin=-Inf, ymax=Inf)
@@ -1666,7 +1666,7 @@ plotBrowserTrack <- function(
         guides(color= guide_colorbar(barwidth = 0.75, barheight = 3))
 
     if(!is.null(highlight)) {
-      highlight <- subsetByOverlaps(x = highlight, ranges = region, type = "within")
+      highlight <- suppressWarnings(subsetByOverlaps(x = highlight, ranges = region, type = "within"))
       if(length(highlight) > 0) {
         highlight <- data.frame(highlight)
         rect <- data.frame(xmin=highlight$start, xmax=highlight$end, ymin=-Inf, ymax=Inf)
@@ -1687,7 +1687,7 @@ plotBrowserTrack <- function(
         theme(axis.title.y=element_blank(), axis.text.y=element_blank(),axis.ticks.y=element_blank())
 
       if(!is.null(highlight)) {
-        highlight <- subsetByOverlaps(x = highlight, ranges = region, type = "within")
+        highlight <- suppressWarnings(subsetByOverlaps(x = highlight, ranges = region, type = "within"))
         if(length(highlight) > 0) {
           highlight <- data.frame(highlight)
           rect <- data.frame(xmin=highlight$start, xmax=highlight$end, ymin=-Inf, ymax=Inf)
@@ -1710,7 +1710,7 @@ plotBrowserTrack <- function(
       theme(axis.title.y=element_blank(), axis.text.y=element_blank(),axis.ticks.y=element_blank())
 
     if(!is.null(highlight)) {
-      highlight <- subsetByOverlaps(x = highlight, ranges = region, type = "within")
+      highlight <- suppressWarnings(subsetByOverlaps(x = highlight, ranges = region, type = "within"))
       if(length(highlight) > 0) {
         highlight <- data.frame(highlight)
         rect <- data.frame(xmin=highlight$start, xmax=highlight$end, ymin=-Inf, ymax=Inf)
@@ -1896,7 +1896,7 @@ plotBrowserTrack <- function(
       guides(fill = "none", colour = "none") + ggtitle(title)
 
     if(!is.null(highlight)) {
-      highlight <- subsetByOverlaps(x = highlight, ranges = region, type = "within")
+      highlight <- suppressWarnings(subsetByOverlaps(x = highlight, ranges = region, type = "within"))
       if(length(highlight) > 0) {
         highlight <- data.frame(highlight)
         rect <- data.frame(xmin=highlight$start, xmax=highlight$end, ymin=-Inf, ymax=Inf)
