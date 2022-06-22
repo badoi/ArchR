@@ -653,7 +653,8 @@ ArchRBrowserTrack <- function(...){
 #' @param loops A `GRanges` object containing the "loops" to be plotted via the "loopTrack".
 #' This `GRanges` object start represents the center position of one loop anchor and the end represents the center position of another loop anchor. 
 #' A "loopTrack" draws an arc between two genomic regions that show some type of interaction. This type of track can be used 
-#' to display chromosome conformation capture data or co-accessibility links obtained using `getCoAccessibility()`. 
+#' to display chromosome conformation capture data or co-accessibility links obtained using `getCoAccessibility()`.
+#' @param highlight A `GRanges` object containing a region on the plot to highlight
 #' @param geneSymbol If `region` is not supplied, plotting can be centered at the transcription start site corresponding to the gene symbol(s) passed here.
 #' @param useMatrix If supplied geneSymbol, one can plot the corresponding GeneScores/GeneExpression within this matrix. I.E. "GeneScoreMatrix"
 #' @param log2Norm If supplied geneSymbol, Log2 normalize the corresponding GeneScores/GeneExpression matrix before plotting.
@@ -689,6 +690,7 @@ plotBrowserTrack <- function(
   sizes = c(10, 1.5, 3, 4),
   features = getPeakSet(ArchRProj),
   loops = getCoAccessibility(ArchRProj),
+  highlight = NULL,
   geneSymbol = NULL,
   useMatrix = NULL,
   log2Norm = TRUE,
@@ -720,6 +722,7 @@ plotBrowserTrack <- function(
   .validInput(input = sizes, name = "sizes", valid = "numeric")
   .validInput(input = features, name = "features", valid = c("granges", "grangeslist", "null"))
   .validInput(input = loops, name = "loops", valid = c("granges", "grangeslist", "null"))
+  .validInput(input = highlight, name = "highlight", valid = c("granges", "null"))
   .validInput(input = geneSymbol, name = "geneSymbol", valid = c("character", "null"))
   .validInput(input = useMatrix, name = "useMatrix", valid = c("character", "null"))
   .validInput(input = log2Norm, name = "log2Norm", valid = c("boolean"))
@@ -793,6 +796,7 @@ plotBrowserTrack <- function(
         region = region[x], 
         tileSize = tileSize, 
         groupBy = groupBy,
+        highlight = highlight,
         threads = threads, 
         minCells = minCells,
         pal = pal,
@@ -819,6 +823,7 @@ plotBrowserTrack <- function(
         region = region[x], 
         tileSize = tileSize, 
         groupBy = groupBy,
+        highlight = highlight,
         threads = threads, 
         minCells = 5,
         maxCells = scCellsMax,
@@ -842,10 +847,11 @@ plotBrowserTrack <- function(
       if(!is.null(features)){
         .logDiffTime(sprintf("Adding Feature Tracks (%s of %s)",x,length(region)), t1=tstart, verbose=verbose, logFile=logFile)
         plotList$featuretrack <- .featureTracks(
-            features = features, 
-            region = region[x], 
+            features = features,
+            region = region[x],
+            highlight = highlight,
             facetbaseSize = facetbaseSize,
-            hideX = TRUE, 
+            hideX = TRUE,
             title = "Peaks",
             logFile = logFile) + theme(plot.margin = unit(c(0.1, 0.75, 0.1, 0.75), "cm"))
       }
@@ -858,10 +864,11 @@ plotBrowserTrack <- function(
       if(!is.null(loops)){
         .logDiffTime(sprintf("Adding Loop Tracks (%s of %s)",x,length(region)), t1=tstart, verbose=verbose, logFile=logFile)
         plotList$looptrack <- .loopTracks(
-            loops = loops, 
-            region = region[x], 
+            loops = loops,
+            region = region[x],
+            highlight = highlight,
             facetbaseSize = facetbaseSize,
-            hideX = TRUE, 
+            hideX = TRUE,
             hideY = TRUE,
             title = "Loops",
             logFile = logFile) + theme(plot.margin = unit(c(0.1, 0.75, 0.1, 0.75), "cm"))
@@ -874,8 +881,9 @@ plotBrowserTrack <- function(
     if("genetrack" %in% tolower(plotSummary)){
       .logDiffTime(sprintf("Adding Gene Tracks (%s of %s)",x,length(region)), t1=tstart, verbose=verbose, logFile=logFile)
       plotList$genetrack <- .geneTracks(
-        geneAnnotation = geneAnnotation, 
-        region = region[x], 
+        geneAnnotation = geneAnnotation,
+        region = region[x],
+        highlight = highlight,
         facetbaseSize = facetbaseSize,
         title = "Genes",
         logFile = logFile) + theme(plot.margin = unit(c(0.1, 0.75, 0.1, 0.75), "cm"))
@@ -959,6 +967,7 @@ plotBrowserTrack <- function(
   tileSize = 100, 
   minCells = 25,
   groupBy = "Clusters",
+  highlight = NULL,
   useGroups = NULL,
   normMethod = "ReadsInTSS",
   threads = 1, 
@@ -1045,6 +1054,12 @@ plotBrowserTrack <- function(
             strip.text.y = element_text(angle = 0),
           strip.background = element_rect(color="black")) +
     guides(fill = "none", colour = "none") + ggtitle(title)
+
+    if(!is.null(highlight)) {
+      highlight <- data.frame(highlight)
+      rect <- data.frame(xmin=highlight$start, xmax=highlight$end, ymin=-Inf, ymax=Inf)
+      p <- p + geom_rect(data=rect, aes(xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax), color=NA, alpha=0.3, inherit.aes = FALSE)
+    }
 
   p
 
@@ -1258,7 +1273,8 @@ plotBrowserTrack <- function(
 #######################################################
 .geneTracks <- function(
   geneAnnotation = NULL, 
-  region = NULL, 
+  region = NULL,
+  highlight = NULL,
   baseSize = 9, 
   borderWidth = 0.4, 
   title = "Genes",
@@ -1351,6 +1367,12 @@ plotBrowserTrack <- function(
       theme(legend.title=element_text(size=5), legend.text=element_text(size=7),
         legend.key.size = unit(0.75,"line"), legend.background = element_rect(color =NA), strip.background = element_blank())
 
+    if(!is.null(highlight)) {
+      highlight <- data.frame(highlight)
+      rect <- data.frame(xmin=highlight$start, xmax=highlight$end, ymin=-Inf, ymax=Inf)
+      p <- p + geom_rect(data=rect, aes(xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax), color=NA, alpha=0.3, inherit.aes = FALSE)
+    }
+
     #Add Labels if There are Genes with this orientation!
     if(length(which(genesO$strand!="-")) > 0){
       p <- p + ggrepel::geom_label_repel(data=genesO[which(genesO$strand!="-"),], 
@@ -1383,6 +1405,11 @@ plotBrowserTrack <- function(
       theme(axis.title.x=element_blank(), axis.text.x=element_blank(),axis.ticks.x=element_blank()) +
       theme(axis.title.y=element_blank(), axis.text.y=element_blank(),axis.ticks.y=element_blank())
 
+    if(!is.null(highlight)) {
+      highlight <- data.frame(highlight)
+      rect <- data.frame(xmin=highlight$start, xmax=highlight$end, ymin=-Inf, ymax=Inf)
+      p <- p + geom_rect(data=rect, aes(xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax), color=NA, alpha=0.3, inherit.aes = FALSE)
+    }
   }
 
   if(!is.ggplot(p)){
@@ -1477,6 +1504,12 @@ plotBrowserTrack <- function(
       theme_ArchR(baseSize = baseSize, baseLineSize = borderWidth, baseRectSize = borderWidth) +
       guides(color = "none", fill = "none") + theme(strip.text.y = element_text(size = facetbaseSize, angle = 0), strip.background = element_blank())
 
+    if(!is.null(highlight)) {
+      highlight <- data.frame(highlight)
+      rect <- data.frame(xmin=highlight$start, xmax=highlight$end, ymin=-Inf, ymax=Inf)
+      p <- p + geom_rect(data=rect, aes(xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax), color=NA, alpha=0.3, inherit.aes = FALSE)
+    }
+
   }else{
 
     #create empty plot
@@ -1488,6 +1521,12 @@ plotBrowserTrack <- function(
       scale_x_continuous(limits = c(start(region), end(region)), expand = c(0,0)) +
       theme(axis.title.x=element_blank(), axis.text.x=element_blank(),axis.ticks.x=element_blank()) +
       theme(axis.title.y=element_blank(), axis.text.y=element_blank(),axis.ticks.y=element_blank())
+
+    if(!is.null(highlight)) {
+      highlight <- data.frame(highlight)
+      rect <- data.frame(xmin=highlight$start, xmax=highlight$end, ymin=-Inf, ymax=Inf)
+      p <- p + geom_rect(data=rect, aes(xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax), color=NA, alpha=0.3, inherit.aes = FALSE)
+    }
 
   }
 
@@ -1596,6 +1635,12 @@ plotBrowserTrack <- function(
           legend.box.background = element_rect(color = NA)) +
         guides(color= guide_colorbar(barwidth = 0.75, barheight = 3))
 
+      if(!is.null(highlight)) {
+        highlight <- data.frame(highlight)
+        rect <- data.frame(xmin=highlight$start, xmax=highlight$end, ymin=-Inf, ymax=Inf)
+        p <- p + geom_rect(data=rect, aes(xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax), color=NA, alpha=0.3, inherit.aes = FALSE)
+      }
+
     }else{
 
       #create empty plot
@@ -1607,6 +1652,12 @@ plotBrowserTrack <- function(
         scale_x_continuous(limits = c(start(region), end(region)), expand = c(0,0)) +
         theme(axis.title.x=element_blank(), axis.text.x=element_blank(),axis.ticks.x=element_blank()) +
         theme(axis.title.y=element_blank(), axis.text.y=element_blank(),axis.ticks.y=element_blank())
+
+      if(!is.null(highlight)) {
+        highlight <- data.frame(highlight)
+        rect <- data.frame(xmin=highlight$start, xmax=highlight$end, ymin=-Inf, ymax=Inf)
+        p <- p + geom_rect(data=rect, aes(xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax), color=NA, alpha=0.3, inherit.aes = FALSE)
+      }
 
     }
 
@@ -1621,6 +1672,12 @@ plotBrowserTrack <- function(
       scale_x_continuous(limits = c(start(region), end(region)), expand = c(0,0)) +
       theme(axis.title.x=element_blank(), axis.text.x=element_blank(),axis.ticks.x=element_blank()) +
       theme(axis.title.y=element_blank(), axis.text.y=element_blank(),axis.ticks.y=element_blank())
+
+    if(!is.null(highlight)) {
+      highlight <- data.frame(highlight)
+      rect <- data.frame(xmin=highlight$start, xmax=highlight$end, ymin=-Inf, ymax=Inf)
+      p <- p + geom_rect(data=rect, aes(xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax), color=NA, alpha=0.3, inherit.aes = FALSE)
+    }
 
   }
 
@@ -1796,6 +1853,12 @@ plotBrowserTrack <- function(
               strip.text.y = element_text(angle = 0),
             strip.background = element_rect(color="black")) +
       guides(fill = "none", colour = "none") + ggtitle(title)
+
+    if(!is.null(highlight)) {
+      highlight <- data.frame(highlight)
+      rect <- data.frame(xmin=highlight$start, xmax=highlight$end, ymin=-Inf, ymax=Inf)
+      p <- p + geom_rect(data=rect, aes(xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax), color=NA, alpha=0.3, inherit.aes = FALSE)
+    }
 
     p
 
