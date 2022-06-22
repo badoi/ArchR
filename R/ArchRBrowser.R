@@ -655,6 +655,8 @@ ArchRBrowserTrack <- function(...){
 #' A "loopTrack" draws an arc between two genomic regions that show some type of interaction. This type of track can be used 
 #' to display chromosome conformation capture data or co-accessibility links obtained using `getCoAccessibility()`.
 #' @param highlight A `GRanges` object containing a region on the plot to highlight
+#' @param highlightColor The color to be used for the highlighted region designated by `highlight`. This can be a valid R color (i.e. "lightblue1")
+#' or a hex color (i.e. "#bfefff")
 #' @param geneSymbol If `region` is not supplied, plotting can be centered at the transcription start site corresponding to the gene symbol(s) passed here.
 #' @param useMatrix If supplied geneSymbol, one can plot the corresponding GeneScores/GeneExpression within this matrix. I.E. "GeneScoreMatrix"
 #' @param log2Norm If supplied geneSymbol, Log2 normalize the corresponding GeneScores/GeneExpression matrix before plotting.
@@ -691,6 +693,7 @@ plotBrowserTrack <- function(
   features = getPeakSet(ArchRProj),
   loops = getCoAccessibility(ArchRProj),
   highlight = NULL,
+  highlightColor = "#bfefff",
   geneSymbol = NULL,
   useMatrix = NULL,
   log2Norm = TRUE,
@@ -723,6 +726,7 @@ plotBrowserTrack <- function(
   .validInput(input = features, name = "features", valid = c("granges", "grangeslist", "null"))
   .validInput(input = loops, name = "loops", valid = c("granges", "grangeslist", "null"))
   .validInput(input = highlight, name = "highlight", valid = c("granges", "null"))
+  .validInput(input = highlightColor, name = "highlightColor", valid = c("character", "null"))
   .validInput(input = geneSymbol, name = "geneSymbol", valid = c("character", "null"))
   .validInput(input = useMatrix, name = "useMatrix", valid = c("character", "null"))
   .validInput(input = log2Norm, name = "log2Norm", valid = c("boolean"))
@@ -797,6 +801,7 @@ plotBrowserTrack <- function(
         tileSize = tileSize, 
         groupBy = groupBy,
         highlight = highlight,
+        highlightColor = highlightColor,
         threads = threads, 
         minCells = minCells,
         pal = pal,
@@ -824,6 +829,7 @@ plotBrowserTrack <- function(
         tileSize = tileSize, 
         groupBy = groupBy,
         highlight = highlight,
+        highlightColor = highlightColor,
         threads = threads, 
         minCells = 5,
         maxCells = scCellsMax,
@@ -850,6 +856,7 @@ plotBrowserTrack <- function(
             features = features,
             region = region[x],
             highlight = highlight,
+            highlightColor = highlightColor,
             facetbaseSize = facetbaseSize,
             hideX = TRUE,
             title = "Peaks",
@@ -867,6 +874,7 @@ plotBrowserTrack <- function(
             loops = loops,
             region = region[x],
             highlight = highlight,
+            highlightColor = highlightColor,
             facetbaseSize = facetbaseSize,
             hideX = TRUE,
             hideY = TRUE,
@@ -884,6 +892,7 @@ plotBrowserTrack <- function(
         geneAnnotation = geneAnnotation,
         region = region[x],
         highlight = highlight,
+        highlightColor = highlightColor,
         facetbaseSize = facetbaseSize,
         title = "Genes",
         logFile = logFile) + theme(plot.margin = unit(c(0.1, 0.75, 0.1, 0.75), "cm"))
@@ -968,6 +977,7 @@ plotBrowserTrack <- function(
   minCells = 25,
   groupBy = "Clusters",
   highlight = NULL,
+  highlightColor = NULL,
   useGroups = NULL,
   normMethod = "ReadsInTSS",
   threads = 1, 
@@ -1058,7 +1068,7 @@ plotBrowserTrack <- function(
     if(!is.null(highlight)) {
       highlight <- data.frame(highlight)
       rect <- data.frame(xmin=highlight$start, xmax=highlight$end, ymin=-Inf, ymax=Inf)
-      p <- p + geom_rect(data=rect, aes(xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax), color=NA, alpha=0.3, inherit.aes = FALSE)
+      p <- p + geom_rect(data=rect, aes(xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax), color=NA, fill=highlightColor, alpha=0.3, inherit.aes = FALSE)
     }
 
   p
@@ -1275,6 +1285,7 @@ plotBrowserTrack <- function(
   geneAnnotation = NULL, 
   region = NULL,
   highlight = NULL,
+  highlightColor = NULL,
   baseSize = 9, 
   borderWidth = 0.4, 
   title = "Genes",
@@ -1370,7 +1381,7 @@ plotBrowserTrack <- function(
     if(!is.null(highlight)) {
       highlight <- data.frame(highlight)
       rect <- data.frame(xmin=highlight$start, xmax=highlight$end, ymin=-Inf, ymax=Inf)
-      p <- p + geom_rect(data=rect, aes(xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax), color=NA, alpha=0.3, inherit.aes = FALSE)
+      p <- p + geom_rect(data=rect, aes(xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax), color=NA, fill=highlightColor, alpha=0.3, inherit.aes = FALSE)
     }
 
     #Add Labels if There are Genes with this orientation!
@@ -1408,7 +1419,7 @@ plotBrowserTrack <- function(
     if(!is.null(highlight)) {
       highlight <- data.frame(highlight)
       rect <- data.frame(xmin=highlight$start, xmax=highlight$end, ymin=-Inf, ymax=Inf)
-      p <- p + geom_rect(data=rect, aes(xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax), color=NA, alpha=0.3, inherit.aes = FALSE)
+      p <- p + geom_rect(data=rect, aes(xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax), color=NA, fill=highlightColor, alpha=0.3, inherit.aes = FALSE)
     }
   }
 
@@ -1427,6 +1438,7 @@ plotBrowserTrack <- function(
   features = NULL, 
   region = NULL,
   highlight = NULL,
+  highlightColor = NULL,
   title = "FeatureTrack", 
   pal = NULL,
   baseSize = 9, 
@@ -1508,7 +1520,7 @@ plotBrowserTrack <- function(
     if(!is.null(highlight)) {
       highlight <- data.frame(highlight)
       rect <- data.frame(xmin=highlight$start, xmax=highlight$end, ymin=-Inf, ymax=Inf)
-      p <- p + geom_rect(data=rect, aes(xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax), color=NA, alpha=0.3, inherit.aes = FALSE)
+      p <- p + geom_rect(data=rect, aes(xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax), color=NA, fill=highlightColor, alpha=0.3, inherit.aes = FALSE)
     }
 
   }else{
@@ -1526,7 +1538,7 @@ plotBrowserTrack <- function(
     if(!is.null(highlight)) {
       highlight <- data.frame(highlight)
       rect <- data.frame(xmin=highlight$start, xmax=highlight$end, ymin=-Inf, ymax=Inf)
-      p <- p + geom_rect(data=rect, aes(xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax), color=NA, alpha=0.3, inherit.aes = FALSE)
+      p <- p + geom_rect(data=rect, aes(xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax), color=NA, fill=highlightColor, alpha=0.3, inherit.aes = FALSE)
     }
 
   }
@@ -1554,6 +1566,7 @@ plotBrowserTrack <- function(
   loops = NULL, 
   region = NULL,
   highlight = NULL,
+  highlightColor = NULL,
   title = "LoopTrack", 
   pal = NULL,
   baseSize = 9, 
@@ -1640,7 +1653,7 @@ plotBrowserTrack <- function(
       if(!is.null(highlight)) {
         highlight <- data.frame(highlight)
         rect <- data.frame(xmin=highlight$start, xmax=highlight$end, ymin=-Inf, ymax=Inf)
-        p <- p + geom_rect(data=rect, aes(xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax), color=NA, alpha=0.3, inherit.aes = FALSE)
+        p <- p + geom_rect(data=rect, aes(xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax), color=NA, fill=highlightColor, alpha=0.3, inherit.aes = FALSE)
       }
 
     }else{
@@ -1658,7 +1671,7 @@ plotBrowserTrack <- function(
       if(!is.null(highlight)) {
         highlight <- data.frame(highlight)
         rect <- data.frame(xmin=highlight$start, xmax=highlight$end, ymin=-Inf, ymax=Inf)
-        p <- p + geom_rect(data=rect, aes(xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax), color=NA, alpha=0.3, inherit.aes = FALSE)
+        p <- p + geom_rect(data=rect, aes(xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax), color=NA, fill=highlightColor, alpha=0.3, inherit.aes = FALSE)
       }
 
     }
@@ -1678,7 +1691,7 @@ plotBrowserTrack <- function(
     if(!is.null(highlight)) {
       highlight <- data.frame(highlight)
       rect <- data.frame(xmin=highlight$start, xmax=highlight$end, ymin=-Inf, ymax=Inf)
-      p <- p + geom_rect(data=rect, aes(xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax), color=NA, alpha=0.3, inherit.aes = FALSE)
+      p <- p + geom_rect(data=rect, aes(xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax), color=NA, fill=highlightColor, alpha=0.3, inherit.aes = FALSE)
     }
 
   }
@@ -1719,6 +1732,7 @@ plotBrowserTrack <- function(
   maxCells = 100,
   groupBy = "Clusters",
   highlight = NULL,
+  highlightColor = NULL,
   useGroups = NULL,
   threads = 1,
   baseSize = 7,
@@ -1860,7 +1874,7 @@ plotBrowserTrack <- function(
     if(!is.null(highlight)) {
       highlight <- data.frame(highlight)
       rect <- data.frame(xmin=highlight$start, xmax=highlight$end, ymin=-Inf, ymax=Inf)
-      p <- p + geom_rect(data=rect, aes(xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax), color=NA, alpha=0.3, inherit.aes = FALSE)
+      p <- p + geom_rect(data=rect, aes(xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax), color=NA, fill=highlightColor, alpha=0.3, inherit.aes = FALSE)
     }
 
     p
