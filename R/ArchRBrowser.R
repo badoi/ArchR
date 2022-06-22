@@ -1066,9 +1066,12 @@ plotBrowserTrack <- function(
     guides(fill = "none", colour = "none") + ggtitle(title)
 
     if(!is.null(highlight)) {
-      highlight <- data.frame(highlight)
-      rect <- data.frame(xmin=highlight$start, xmax=highlight$end, ymin=-Inf, ymax=Inf)
-      p <- p + geom_rect(data=rect, aes(xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax), color=NA, fill=highlightColor, alpha=0.3, inherit.aes = FALSE)
+      highlight <- subsetByOverlaps(x = highlight, ranges = region, type = "within")
+      if(length(highlight) > 0) {
+        highlight <- data.frame(highlight)
+        rect <- data.frame(xmin=highlight$start, xmax=highlight$end, ymin=-Inf, ymax=Inf)
+        p <- p + geom_rect(data=rect, aes(xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax), color=NA, fill=highlightColor, alpha=0.3, inherit.aes = FALSE)
+      }
     }
 
   p
@@ -1379,9 +1382,12 @@ plotBrowserTrack <- function(
         legend.key.size = unit(0.75,"line"), legend.background = element_rect(color =NA), strip.background = element_blank())
 
     if(!is.null(highlight)) {
-      highlight <- data.frame(highlight)
-      rect <- data.frame(xmin=highlight$start, xmax=highlight$end, ymin=-Inf, ymax=Inf)
-      p <- p + geom_rect(data=rect, aes(xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax), color=NA, fill=highlightColor, alpha=0.3, inherit.aes = FALSE)
+      highlight <- subsetByOverlaps(x = highlight, ranges = region, type = "within")
+      if(length(highlight) > 0) {
+        highlight <- data.frame(highlight)
+        rect <- data.frame(xmin=highlight$start, xmax=highlight$end, ymin=-Inf, ymax=Inf)
+        p <- p + geom_rect(data=rect, aes(xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax), color=NA, fill=highlightColor, alpha=0.3, inherit.aes = FALSE)
+      }
     }
 
     #Add Labels if There are Genes with this orientation!
@@ -1417,9 +1423,12 @@ plotBrowserTrack <- function(
       theme(axis.title.y=element_blank(), axis.text.y=element_blank(),axis.ticks.y=element_blank())
 
     if(!is.null(highlight)) {
-      highlight <- data.frame(highlight)
-      rect <- data.frame(xmin=highlight$start, xmax=highlight$end, ymin=-Inf, ymax=Inf)
-      p <- p + geom_rect(data=rect, aes(xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax), color=NA, fill=highlightColor, alpha=0.3, inherit.aes = FALSE)
+      highlight <- subsetByOverlaps(x = highlight, ranges = region, type = "within")
+      if(length(highlight) > 0) {
+        highlight <- data.frame(highlight)
+        rect <- data.frame(xmin=highlight$start, xmax=highlight$end, ymin=-Inf, ymax=Inf)
+        p <- p + geom_rect(data=rect, aes(xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax), color=NA, fill=highlightColor, alpha=0.3, inherit.aes = FALSE)
+      }
     }
   }
 
@@ -1518,9 +1527,12 @@ plotBrowserTrack <- function(
       guides(color = "none", fill = "none") + theme(strip.text.y = element_text(size = facetbaseSize, angle = 0), strip.background = element_blank())
 
     if(!is.null(highlight)) {
-      highlight <- data.frame(highlight)
-      rect <- data.frame(xmin=highlight$start, xmax=highlight$end, ymin=-Inf, ymax=Inf)
-      p <- p + geom_rect(data=rect, aes(xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax), color=NA, fill=highlightColor, alpha=0.3, inherit.aes = FALSE)
+      highlight <- subsetByOverlaps(x = highlight, ranges = region, type = "within")
+      if(length(highlight) > 0) {
+        highlight <- data.frame(highlight)
+        rect <- data.frame(xmin=highlight$start, xmax=highlight$end, ymin=-Inf, ymax=Inf)
+        p <- p + geom_rect(data=rect, aes(xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax), color=NA, fill=highlightColor, alpha=0.3, inherit.aes = FALSE)
+      }
     }
 
   }else{
@@ -1536,9 +1548,12 @@ plotBrowserTrack <- function(
       theme(axis.title.y=element_blank(), axis.text.y=element_blank(),axis.ticks.y=element_blank())
 
     if(!is.null(highlight)) {
-      highlight <- data.frame(highlight)
-      rect <- data.frame(xmin=highlight$start, xmax=highlight$end, ymin=-Inf, ymax=Inf)
-      p <- p + geom_rect(data=rect, aes(xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax), color=NA, fill=highlightColor, alpha=0.3, inherit.aes = FALSE)
+      highlight <- subsetByOverlaps(x = highlight, ranges = region, type = "within")
+      if(length(highlight) > 0) {
+        highlight <- data.frame(highlight)
+        rect <- data.frame(xmin=highlight$start, xmax=highlight$end, ymin=-Inf, ymax=Inf)
+        p <- p + geom_rect(data=rect, aes(xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax), color=NA, fill=highlightColor, alpha=0.3, inherit.aes = FALSE)
+      }
     }
 
   }
@@ -1650,11 +1665,14 @@ plotBrowserTrack <- function(
           legend.box.background = element_rect(color = NA)) +
         guides(color= guide_colorbar(barwidth = 0.75, barheight = 3))
 
-      if(!is.null(highlight)) {
+    if(!is.null(highlight)) {
+      highlight <- subsetByOverlaps(x = highlight, ranges = region, type = "within")
+      if(length(highlight) > 0) {
         highlight <- data.frame(highlight)
         rect <- data.frame(xmin=highlight$start, xmax=highlight$end, ymin=-Inf, ymax=Inf)
         p <- p + geom_rect(data=rect, aes(xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax), color=NA, fill=highlightColor, alpha=0.3, inherit.aes = FALSE)
       }
+    }
 
     }else{
 
@@ -1669,9 +1687,12 @@ plotBrowserTrack <- function(
         theme(axis.title.y=element_blank(), axis.text.y=element_blank(),axis.ticks.y=element_blank())
 
       if(!is.null(highlight)) {
-        highlight <- data.frame(highlight)
-        rect <- data.frame(xmin=highlight$start, xmax=highlight$end, ymin=-Inf, ymax=Inf)
-        p <- p + geom_rect(data=rect, aes(xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax), color=NA, fill=highlightColor, alpha=0.3, inherit.aes = FALSE)
+        highlight <- subsetByOverlaps(x = highlight, ranges = region, type = "within")
+        if(length(highlight) > 0) {
+          highlight <- data.frame(highlight)
+          rect <- data.frame(xmin=highlight$start, xmax=highlight$end, ymin=-Inf, ymax=Inf)
+          p <- p + geom_rect(data=rect, aes(xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax), color=NA, fill=highlightColor, alpha=0.3, inherit.aes = FALSE)
+        }
       }
 
     }
@@ -1689,9 +1710,12 @@ plotBrowserTrack <- function(
       theme(axis.title.y=element_blank(), axis.text.y=element_blank(),axis.ticks.y=element_blank())
 
     if(!is.null(highlight)) {
-      highlight <- data.frame(highlight)
-      rect <- data.frame(xmin=highlight$start, xmax=highlight$end, ymin=-Inf, ymax=Inf)
-      p <- p + geom_rect(data=rect, aes(xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax), color=NA, fill=highlightColor, alpha=0.3, inherit.aes = FALSE)
+      highlight <- subsetByOverlaps(x = highlight, ranges = region, type = "within")
+      if(length(highlight) > 0) {
+        highlight <- data.frame(highlight)
+        rect <- data.frame(xmin=highlight$start, xmax=highlight$end, ymin=-Inf, ymax=Inf)
+        p <- p + geom_rect(data=rect, aes(xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax), color=NA, fill=highlightColor, alpha=0.3, inherit.aes = FALSE)
+      }
     }
 
   }
@@ -1872,9 +1896,12 @@ plotBrowserTrack <- function(
       guides(fill = "none", colour = "none") + ggtitle(title)
 
     if(!is.null(highlight)) {
-      highlight <- data.frame(highlight)
-      rect <- data.frame(xmin=highlight$start, xmax=highlight$end, ymin=-Inf, ymax=Inf)
-      p <- p + geom_rect(data=rect, aes(xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax), color=NA, fill=highlightColor, alpha=0.3, inherit.aes = FALSE)
+      highlight <- subsetByOverlaps(x = highlight, ranges = region, type = "within")
+      if(length(highlight) > 0) {
+        highlight <- data.frame(highlight)
+        rect <- data.frame(xmin=highlight$start, xmax=highlight$end, ymin=-Inf, ymax=Inf)
+        p <- p + geom_rect(data=rect, aes(xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax), color=NA, fill=highlightColor, alpha=0.3, inherit.aes = FALSE)
+      }
     }
 
     p
