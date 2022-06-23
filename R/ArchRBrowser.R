@@ -654,7 +654,7 @@ ArchRBrowserTrack <- function(...){
 #' This `GRanges` object start represents the center position of one loop anchor and the end represents the center position of another loop anchor. 
 #' A "loopTrack" draws an arc between two genomic regions that show some type of interaction. This type of track can be used 
 #' to display chromosome conformation capture data or co-accessibility links obtained using `getCoAccessibility()`.
-#' @param highlight A `GRanges` object containing a region on the plot to highlight. Multiple highlighted regions within the GRanges object are allowed
+#' @param highlight A `GRanges` object containing a region or regions on the plot to highlight. Multiple highlighted regions within the GRanges object are allowed
 #' Any highlight region that does not overlap the displayed region will be ignored.
 #' @param highlightColor The color to be used for the highlighted region designated by `highlight`. This can be a valid R color (i.e. "lightblue1")
 #' or a hex color (i.e. "#bfefff")
@@ -785,6 +785,11 @@ plotBrowserTrack <- function(
     }
     featureMat <- data.frame(t(featureMat))
     featureMat$Group <- getCellColData(ArchRProj, groupBy, drop = FALSE)[rownames(featureMat), 1]
+  }
+
+  #highlightColor isnt checked for NULL later so we just make sure it isnt NULL here
+  if(is.null(highlightColor)){
+    highlightColor <- "#bfefff"
   }
 
   ggList <- lapply(seq_along(region), function(x){
